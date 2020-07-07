@@ -1,0 +1,107 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  /* Style the search field */
+  form.example input[type=text] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid grey;
+    float: left;
+    width: 80%;
+    background: #f1f1f1;
+  }
+  
+  /* Style the submit button */
+  form.example button {
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none; /* Prevent double borders */
+    cursor: pointer;
+  }
+  
+  form.example button:hover {
+    background: #0b7dda;
+  }
+  
+  /* Clear floats */
+  form.example::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+
+  h1{
+      color:white;
+      text-align: center;
+      background-color: black;
+  }
+
+  .search{
+     background-color: #D3D3D3;
+     Height: 100%;
+  }
+
+  .cont{
+      height: 500px ;
+  }
+
+  body{
+   height: 100%;   
+  }
+
+  .submit2{
+
+    background-color: white;
+    -webkit-tap-highlight-color: #f1f1f1;
+  }
+
+  .search-div{
+    background: #f1f1f1;
+    height: 45px;
+    padding: 10px;
+    width: 75%;
+    text-align: center;
+    font-size: 17px;
+    border: 1px solid grey;
+    font-family: inherit;
+    box-sizing: border-box;
+    margin-top: 4px;
+    background-color: rgb(232, 240, 254) !important;
+    color: -internal-light-dark-color(black, white);
+    text-rendering: auto;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    font: Arial;
+  }
+
+  .bottomsec{
+    border: 1px solid grey; 
+    height: 49%;
+    margin: 4px;
+
+  }
+
+  .topsec{
+    border: 1px solid grey;
+    height: 49%;
+    margin: 4px;
+
+  }
+
+  .square_class{
+    background-color: #87CEEB;
+    height: 175px;
+    width: 120px;
+    border: 1px solid grey;
+    margin: 10px;
+    float: left;
+    margin-left: 12px;
+    white-space: pre-wrap;
+  }

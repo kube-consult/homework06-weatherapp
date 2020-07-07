@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Paul Foster">
+    <title>Homework 02 · Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="custom.css" rel="stylesheet">
+    <!-- Added link to the jQuery Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container no-gutters cont">
+        <div class="row justify-content-start">
+            <div class="col-12">
+                <h1 class="fa-heading">
+                    Weather Dashboard
+                </h1>
+            </div>
+        </div>
+        <div class="row justify-content-start cont">
+            <div class="col-4 search cont">
+                <h2 class="fa-heading">Search for a city</h2>
+                <form class="example form">
+                    <input class="submit2" type="text" placeholder="Search.." name="search">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+                <div class="list"></div>
+            </div>
+            <div class="col-8">
+                <div class="topsec">
+                    <h2 class="fa-heading topsec-heading">
+                    </h2>
+                    <dev class="topsec-append">
+                    </dev>
+                </div>
+                <div class="bottomsec">
+                    <h2 class="fa-heading">
+                        5-day forcast
+                    </h2>
+                    <div class="bottomsec-append">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var lon;
+            var lat;
+            var city;
+            var listarray = [];
+            var objdays = {
+                0: "Sunday",
+                1: "Monday",
+                2: "Tuesday",
+                3: "Wednesday",
+                4: "Thursday ",
+                5: "Friday",
+                6: "Saturday"
+            }
+
+            retrieve();
+
+            $(".form").on("submit", function() {
+                event.preventDefault();
+                city = $(".submit2").val();
+                queryWeather();
+            });
+
+            $(document).on("click", ".search-div", function (){
+                event.preventDefault();
+                city = $(this).text();
+                queryWeather();
+            });
+
+            function queryWeather() {
+                query("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=b8c56acf98623fe1acdc0dacc278bd68");
+            }
+
+            function renderlist() {
+                $(".list").empty();
+                listarray.forEach(element => {
+                    var searchdiv = $("<div>");
+                    $(searchdiv).addClass("search-div");
+                    $(searchdiv).text(element);
+                    $(".list").append(searchdiv);
+                });
+            }
+
+            function calc(kelvin){
+                var celcius = (kelvin - 273.15);
+               return  Math.round(celcius);
+               // return celcius;
+            }
+
+            function store(label) {
+                localStorage.setItem("cities", JSON.stringify(listarray));
+            }
+
+            function retrieve() {
+                if (localStorage.getItem("cities")){
+                    var backJSON = localStorage.getItem("cities");
+                    listarray = JSON.parse(backJSON);
+                    renderlist();
+                    city = listarray[0];
+                    queryWeather();
+                }
+            }
+
+            function rendorweather(res) {
+                console.log("testing 1 2 3 " + res.name);
+                var today = new Date();
+                var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+                var iconcode = res.weather[0].icon;
+                var iconurl = "http://openweathermap.org/img/w/" + iconcode + ".png";
+                $(".topsec-heading").text(res.name + " " + date + " ")
+                $('.topsec-heading').prepend($('<img>', { id: 'theImg', src: iconurl }))
+                $(".topsec-append").empty()
+                console.log("icn = " + iconurl);
+                var cel = calc(res.main.temp);
+
+                $('<div/>', {
+                    "class": 'some-class',
+                    text: ("Humidity:" + res.main.humidity)
+                }).appendTo('.topsec-append');
+                $('<div/>', {
+                    "class": 'some-class',
+                    text: ("Temperature: " + cel)
+                }).appendTo('.topsec-append');
+                $('<div/>', {
+                    "class": 'some-class',
+                    text: ("Wind Speed: " + res.wind.speed)
+                }).appendTo('.topsec-append');
+            }
+
+            function rendorweather_daily(res) {
+                $(".bottomsec-append").empty()
+                var d = new Date();
+                var day = d.getDay();
+                day++;
+                $('<div/>', {
+                    "class": 'some-class',
+                    text: ("UV Index: " + res.daily[0].uvi)
+                }).appendTo('.topsec-append');
+                for (i = 0; i < 5; i++) {
+                    var iconcode = res.daily[i].weather[0].icon;
+                    var iconurl = "http://openweathermap.org/img/w/" + iconcode + ".png";
+                    var cel = calc(res.daily[i].temp.day);
+                    $("<div></div>", {
+                        text: (objdays[day] + "\n" + cel + "\n"+ res.daily[i].weather[0].main + "\n"),
+                        "class": 'square_class',
+                        "id": i
+                    }).appendTo('.bottomsec-append');
+                    var img = $('<img />', {
+                        id: 'Myid',
+                        src: iconurl,
+                    });
+                    img.appendTo($('#' +i));
+                    day++
+                    if (day === 7) {
+                        day = 0
+                    }
+                }
+            }
+
+            function query(queryURL) {
+                console.log("test 3 " + queryURL);
+                var tmp; 9
+                $.ajax({
+                    url: queryURL,
+                    method: "GET",
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        if (xhr.status == 404) {
+                            alert(thrownError);
+                        }
+                    },
+                }).then(function (response) {
+                    console.log(response);
+                    if (response.weather) {
+                        console.log("test 1 " + response);
+                        lon = response.coord.lon;
+                        lat = response.coord.lat;
+                        query("https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude=hourly,minutely,current&appid=b8c56acf98623fe1acdc0dacc278bd68")
+                        rendorweather(response);
+                    } else if (response.daily) {
+                        console.log("test 2 " + response);
+                        const filtered = listarray.filter((element) => {
+                            if (element !== city){
+                                return true;
+                            }
+                        });
+                        console.log("filetered = " + filtered + " listarray = " + listarray);
+                        listarray = filtered;
+                        if (listarray.length === 8) {
+                            listarray.pop();
+                        }
+                        listarray.unshift(city);
+                        store();
+                        renderlist();
+                        rendorweather_daily(response);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
